@@ -1,27 +1,28 @@
 class Fancy:
 
     def __init__(self):
-        self.mod = 10**9 + 7  
-        self.val = []  
-        self.a = 1  
-        self.b = 0  
+        self.seq = []
+        self.mul = 1
+        self.add = 0
+        self.mod = 10**9 + 7
 
     def append(self, val: int) -> None:
-        x = (val - self.b + self.mod) % self.mod
-        self.val.append(x * pow(self.a, self.mod - 2, self.mod) % self.mod)
+        stored = (val - self.add) % self.mod
+        mulInv = pow(self.mul, self.mod - 2, self.mod)
+        stored = (stored * mulInv) % self.mod
+        self.seq.append(stored)
 
     def addAll(self, inc: int) -> None:
-        self.b = (self.b + inc) % self.mod
-
+        self.add = (self.add + inc) % self.mod 
+        
     def multAll(self, m: int) -> None:
-        self.a = (self.a * m) % self.mod
-        self.b = (self.b * m) % self.mod
+        self.add = (self.add * m) % self.mod
+        self.mul = (self.mul * m) % self.mod
 
     def getIndex(self, idx: int) -> int:
-        if idx >= len(self.val):
-            return -1  
-        return (self.a * self.val[idx] + self.b) % self.mod
-
+        if len(self.seq) <= idx:
+            return -1
+        return (self.seq[idx] * self.mul + self.add) % self.mod
 # Your Fancy object will be instantiated and called as such:
 # obj = Fancy()
 # obj.append(val)
