@@ -2,27 +2,20 @@ class Solution:
     def numberOfSubmatrices(self, grid: List[List[str]]) -> int:
         row = len(grid)
         col = len(grid[0])
-        currX = [[0] * col for _ in range(row)]
-        currY = [[0] * col for _ in range(row)]
+        currX = [0] * col 
+        currY = [0] * col 
         count = 0
         for i in range(row):
+            countX = 0
+            countY = 0
             for j in range(col):
+                if grid[i][j] == 'X':
+                    currX[j] += 1
 
-                currX[i][j] = 1 if grid[i][j] == 'X' else 0
-                currY[i][j] = 1 if grid[i][j] == 'Y' else 0
-
-                if i - 1 >= 0:
-                    currX[i][j] += currX[i-1][j]
-                    currY[i][j] += currY[i-1][j]
-
-                if j - 1 >= 0:
-                    currX[i][j] += currX[i][j-1]
-                    currY[i][j] += currY[i][j-1]
-
-                if i - 1 >= 0 and j - 1 >= 0:
-                    currX[i][j] -= currX[i-1][j-1]
-                    currY[i][j] -= currY[i-1][j-1]
-
-                if currX[i][j] == currY[i][j] and currX[i][j] > 0:
+                elif grid[i][j] == 'Y':
+                    currY[j] += 1
+                countX += currX[j]
+                countY += currY[j]
+                if countX == countY and countX > 0:
                     count += 1
         return count
