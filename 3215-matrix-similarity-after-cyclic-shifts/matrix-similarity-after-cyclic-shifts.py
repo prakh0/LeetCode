@@ -2,12 +2,15 @@ class Solution:
     def areSimilar(self, mat: List[List[int]], k: int) -> bool:
         m, n = len(mat), len(mat[0])
         k = k % n 
+        if k == 0:
+            return True
         for i in range(m):
-            original = mat[i]
-            if i % 2 == 0:
-                rotated = original[k:] + original[:k]
-            else:
-                rotated = original[-k:] + original[:-k]
-            if rotated != original:
-                return False
+            for j in range(n):
+                if i % 2 == 0:
+                    final = (j + k) % n
+                else:
+                    final = (j-k+n) % n
+                if mat[i][j] != mat[i][final]:
+                    return False
         return True
+            
