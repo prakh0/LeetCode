@@ -3,8 +3,6 @@ class Solution:
         n = len(lcp)
         word = [""] * n
         current = ord("a")
-
-        # construct the string starting from 'a' to 'z' sequentially
         for i in range(n):
             if not word[i]:
                 if current > ord("z"):
