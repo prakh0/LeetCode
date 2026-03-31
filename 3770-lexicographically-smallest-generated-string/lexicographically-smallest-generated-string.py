@@ -1,24 +1,29 @@
 class Solution:
     def generateString(self, str1: str, str2: str) -> str:
-        n, m = len(str1), len(str2)
-        s = ["a"] * (n + m - 1)
-        fixed = [False] * (n + m - 1)
-
-        for i, ch in enumerate(str1):
-            if ch == "T":
-                for j, c in enumerate(str2, i):
-                    if fixed[j] and s[j] != c:
+        n = len(str1)
+        m = len(str2)
+        word = ["?"] * (n + m - 1)
+        canChange = [False] * (n + m - 1)
+        for i in range(n):
+            if str1[i] == "T":
+                for j in range(m):
+                    if word[i+j] == "?" or word[i+j] == str2[j]:
+                        word[i+j] = str2[j]
+                    else:
                         return ""
-                    s[j], fixed[j] = c, True
-        for i, ch in enumerate(str1):
-            if ch == "F":
-                if any(str2[j - i] != s[j] for j in range(i, i + m)):
-                    continue
-                for j in range(i + m - 1, i - 1, -1):
-                    if not fixed[j]:
-                        s[j] = "b"
-                        break
-                else:
-                    return ""
-
-        return "".join(s)
+        for x in range(m + n - 1):
+            if word[x] == "?":
+                word[x] = "a"
+                canChange[x] = True
+        for i in range(n):
+            if str1[i] == "F":
+                if "".join(word[i:i+m]) == str2:
+                    success = False
+                    for j in range(m-1,-1,-1):
+                        if canChange[i+j]:
+                            word[i+j] = "b"
+                            success = True
+                            break
+                    if success == False:
+                        return ""
+        return ''.join(word)
