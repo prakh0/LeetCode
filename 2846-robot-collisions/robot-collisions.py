@@ -2,7 +2,7 @@ class Solution:
     def survivedRobotsHealths(self, positions: List[int], healths: List[int], directions: str) -> List[int]:
         n = len(positions)
         indices = list(range(n))
-        indices = sorted(indices ,key = lambda i: positions[i])
+        indices.sort(key = lambda i: positions[i])
 
         stack = []
         for current in indices:
