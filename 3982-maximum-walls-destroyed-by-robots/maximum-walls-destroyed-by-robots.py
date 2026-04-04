@@ -1,60 +1,48 @@
 class Solution:
-    def maxWalls(
-        self, robots: List[int], distance: List[int], walls: List[int]
-    ) -> int:
+    def maxWalls(self, robots: List[int], distance: List[int], walls: List[int]) -> int:
         n = len(robots)
-        left = [0] * n
-        right = [0] * n
-        num = [0] * n
-        robots_to_distance = {}
 
-        for i in range(n):
-            robots_to_distance[robots[i]] = distance[i]
-
-        robots.sort()
+        robots = sorted(zip(robots, distance))
         walls.sort()
 
-        for i in range(n):
-            pos1 = bisect.bisect_right(walls, robots[i])
+        robots.append((10**18, 0))
 
-            if i >= 1:
-                left_bound = max(
-                    robots[i] - robots_to_distance[robots[i]], robots[i - 1] + 1
-                )
-                left_pos = bisect.bisect_left(walls, left_bound)
-            else:
-                left_pos = bisect.bisect_left(
-                    walls, robots[i] - robots_to_distance[robots[i]]
-                )
+        def count_walls(l, r):
+            if l > r:
+                return 0
+            return bisect.bisect_right(walls, r) - bisect.bisect_left(walls, l)
 
-            left[i] = pos1 - left_pos
+        dp = [[0, 0] for _ in range(n)]
 
-            if i < n - 1:
-                right_bound = min(
-                    robots[i] + robots_to_distance[robots[i]], robots[i + 1] - 1
-                )
-                right_pos = bisect.bisect_right(walls, right_bound)
-            else:
-                right_pos = bisect.bisect_right(
-                    walls, robots[i] + robots_to_distance[robots[i]]
-                )
+        pos, dist = robots[0]
 
-            pos2 = bisect.bisect_left(walls, robots[i])
-            right[i] = right_pos - pos2
+        left_gain = count_walls(pos - dist, pos)
+        right_gain = count_walls(pos, min(robots[1][0] - 1, pos + dist))
 
-            if i == 0:
-                continue
+        dp[0][0] = left_gain
+        dp[0][1] = right_gain
 
-            pos3 = bisect.bisect_left(walls, robots[i - 1])
-            num[i] = pos1 - pos3
-
-        sub_left, sub_right = left[0], right[0]
         for i in range(1, n):
-            current_left = max(
-                sub_left + left[i],
-                sub_right - right[i - 1] + min(left[i] + right[i - 1], num[i]),
-            )
-            current_right = max(sub_left + right[i], sub_right + right[i])
-            sub_left, sub_right = current_left, current_right
+            pos, dist = robots[i]
+            prev_pos, prev_dist = robots[i - 1]
 
-        return max(sub_left, sub_right)
+
+            left_l = max(pos - dist, prev_pos + 1)
+            left_r = pos
+            left_gain = count_walls(left_l, left_r)
+
+            right_l = pos
+            right_r = min(robots[i + 1][0] - 1, pos + dist)
+            right_gain = count_walls(right_l, right_r)
+
+            dp[i][1] = max(dp[i - 1][0], dp[i - 1][1]) + right_gain
+
+            dp[i][0] = dp[i - 1][0] + left_gain
+
+            overlap_l = left_l
+            overlap_r = min(prev_pos + prev_dist, pos - 1)
+            overlap = count_walls(overlap_l, overlap_r)
+
+            dp[i][0] = max(dp[i][0], dp[i - 1][1] + left_gain - overlap)
+
+        return max(dp[n - 1][0], dp[n - 1][1])
