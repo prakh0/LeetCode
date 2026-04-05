@@ -1,11 +1,13 @@
 class Solution:
     def judgeCircle(self, moves: str) -> bool:
-        freq = {}
+        x = y = 0
         for ch in moves:
-            if ch in freq:
-                freq[ch] += 1
-            else:
-                freq[ch] = 1
-        if freq.get('U',0) == freq.get('D',0) and freq.get('L',0) == freq.get('R',0):
-            return True
-        return False
+            if ch == 'U':
+                x += 1
+            elif ch == 'D':
+                x -= 1
+            elif ch == 'L':
+                y += 1
+            elif ch == 'R':
+                y -= 1
+        return x== 0 and y == 0
