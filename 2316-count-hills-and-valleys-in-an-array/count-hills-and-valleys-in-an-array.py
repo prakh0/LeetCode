@@ -1,16 +1,13 @@
 class Solution:
     def countHillValley(self, nums: List[int]) -> int:
-        result = 0
-        non_equal = [nums[0]]
+        arr = [nums[0]]
         for i in range(1,len(nums)):
-            if nums[i-1] != nums[i]:
-                non_equal.append(nums[i])
-
-        for i in range(1,len(non_equal)-1):
-            if non_equal[i] < non_equal[i+1] and non_equal[i] < non_equal[i-1]:
-                result += 1
-            elif non_equal[i] > non_equal[i+1] and non_equal[i] > non_equal[i-1]:
-                result += 1
-            else:
-                continue
-        return result
+            if nums[i] != nums[i-1]:
+                arr.append(nums[i])
+        count = 0
+        for j in range(1,len(arr) - 1):
+            if arr[j] > arr[j-1] and arr[j] > arr[j+1]:
+                count += 1
+            elif arr[j] < arr[j-1] and arr[j] < arr[j+1]:
+                count += 1
+        return count
