@@ -8,6 +8,4 @@ class Solution:
                 result = max(depth,result)
             elif i == ")":
                 depth -= 1
-            else:
-                continue
         return result
